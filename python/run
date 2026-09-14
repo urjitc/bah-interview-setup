@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# ./run          -> install deps (once) and run the tests
+# ./run serve    -> start the API on http://127.0.0.1:8000
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [ ! -d .venv ]; then
+  py=$(command -v python3 || command -v python)
+  "$py" -m venv .venv
+fi
+if [ -f .venv/bin/activate ]; then
+  source .venv/bin/activate          # macOS, Linux, WSL
+else
+  source .venv/Scripts/activate      # Git Bash on Windows
+fi
+pip install -q --disable-pip-version-check -r requirements.txt
+
+if [ "${1:-}" = "serve" ]; then
+  exec uvicorn app.main:app --reload
+fi
+exec pytest -q "$@"

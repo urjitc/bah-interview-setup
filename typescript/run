@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# ./run          -> install deps (once) and run the tests
+# ./run serve    -> start the API on http://127.0.0.1:8000
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [ ! -d node_modules ]; then
+  npm install --silent --no-audit --no-fund
+fi
+
+if [ "${1:-}" = "serve" ]; then
+  exec npm run -s serve
+fi
+exec npm test -s -- "$@"
